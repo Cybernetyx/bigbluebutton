@@ -172,6 +172,10 @@ class AudioModal extends Component {
     } = this.props;
 
     if (!isUsingAudio) {
+      /** begin: custom code, this will bypass the modal selection */
+      return this.handleJoinMicrophone();
+      /** end: custom code */
+
       if (forceListenOnlyAttendee || audioLocked) return this.handleJoinListenOnly();
 
       if (joinFullAudioImmediately && !listenOnlyMode) return this.handleJoinMicrophone();
