@@ -104,12 +104,14 @@ class TimeWindowChatItem extends PureComponent {
       return this.renderPollItem();
     }
 
+    const filterWelcomeMessageText = (message) => message.text === CHAT_CLEAR_MESSAGE;
+
     return (
       <Styled.Item
         key={`time-window-chat-item-${messageKey}`}
         ref={element => this.itemRef = element} >
         <Styled.Messages>
-          {messages.map((message) => (
+          {messages.filter(filterWelcomeMessageText).map(message => (
             message.text !== ''
               ? (
                 <Styled.SystemMessageChatItem

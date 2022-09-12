@@ -208,28 +208,33 @@ class SettingsDropdown extends PureComponent {
         label: intl.formatMessage(intlMessages.settingsLabel),
         // description: intl.formatMessage(intlMessages.settingsDesc),
         onClick: () => mountModal(<SettingsMenuContainer />),
-      },
-      {
-        key: 'list-item-about',
-        icon: 'about',
-        label: intl.formatMessage(intlMessages.aboutLabel),
-        // description: intl.formatMessage(intlMessages.aboutDesc),
-        onClick: () => mountModal(<AboutContainer />),
-      },
+      }
+      /** begin: hiding original code */
+      // {
+      //   key: 'list-item-about',
+      //   icon: 'about',
+      //   label: intl.formatMessage(intlMessages.aboutLabel),
+      //   // description: intl.formatMessage(intlMessages.aboutDesc),
+      //   onClick: () => mountModal(<AboutContainer />),
+      // },
+      /** end: hiding original code */
+
     );
 
-    if (helpButton) {
-      this.menuItems.push(
-        {
-          key: 'list-item-help',
-          icon: 'help',
-          iconRight: 'popout_window',
-          label: intl.formatMessage(intlMessages.helpLabel),
-          // description: intl.formatMessage(intlMessages.helpDesc),
-          onClick: () => window.open(`${helpLink}`),
-        },
-      );
-    }
+    /** begin: hiding original code */
+    // if (helpButton) {
+    //   this.menuItems.push(
+    //     {
+    //       key: 'list-item-help',
+    //       icon: 'help',
+    //       iconRight: 'popout_window',
+    //       label: intl.formatMessage(intlMessages.helpLabel),
+    //       // description: intl.formatMessage(intlMessages.helpDesc),
+    //       onClick: () => window.open(`${helpLink}`),
+    //     },
+    //   );
+    // }
+    /** end: hiding original code */
 
     this.menuItems.push(
       {

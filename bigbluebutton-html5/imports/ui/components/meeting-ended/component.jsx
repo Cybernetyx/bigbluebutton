@@ -263,7 +263,11 @@ class MeetingEnded extends PureComponent {
             <Styled.Title data-test="meetingEndedModalTitle">
               {this.getEndingMessage()}
             </Styled.Title>
-            {!allowRedirectToLogoutURL() ? null : (
+            {/* 
+            custom code: adding true, so that we don't display go to learning dashboard pop
+            after session/meeting has ended
+             */}
+            {true || !allowRedirectToLogoutURL() ? null : (
               <div>
                 {
                   LearningDashboardService.isModerator()
