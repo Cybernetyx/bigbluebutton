@@ -7,7 +7,7 @@ const { SOCKET_SERVER_URL } = CONFIG;
 let socket = null;
 
 export const getUserInfo = () => {
-  const userInfo = sessionStorage.getItem('BBB_externUserID');
+  const userInfo = decodeURIComponent(sessionStorage.getItem('BBB_externUserID'));
   const userInfoArr = userInfo.split(',');
   const userID = userInfoArr[0];
   const socketID = encodeURIComponent(userInfoArr[1]);
