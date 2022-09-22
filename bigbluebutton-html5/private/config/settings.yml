@@ -445,7 +445,7 @@ public:
     lines: 2
     time: 5000
   chat:
-    enabled: true
+    enabled: false
     itemsPerPage: 100
     timeBetweenFetchs: 1000
     enableSaveAndCopyPublicChat: true
@@ -471,7 +471,7 @@ public:
       enabled: true
     moderatorChatEmphasized: true
   notes:
-    enabled: true
+    enabled: false
     id: notes
   layout:
     autoSwapLayout: false
