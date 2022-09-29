@@ -13,6 +13,10 @@ let lastToast = {
 };
 
 export function notify(message, type = 'default', icon, options, content, small) {
+
+  /** hiding all notifications */
+  return 
+
   const settings = {
     type,
     ...options,
