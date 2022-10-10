@@ -26,7 +26,6 @@ import DebugWindow from '/imports/ui/components/debug-window/component';
 import { ACTIONS, PANELS } from '../../ui/components/layout/enums';
 import { isChatEnabled } from '/imports/ui/services/features';
 import MediaService from '/imports/ui/components/media/service';
-import { connectLiveServer } from '/imports/utils/custom/socket';
 
 const CHAT_CONFIG = Meteor.settings.public.chat;
 const PUBLIC_CHAT_ID = CHAT_CONFIG.public_id;
@@ -187,7 +186,6 @@ class Base extends Component {
         }
       },
     });
-    connectLiveServer();
   }
 
   componentDidUpdate(prevProps, prevState) {
