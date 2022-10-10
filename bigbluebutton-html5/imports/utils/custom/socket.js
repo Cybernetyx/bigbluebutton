@@ -57,6 +57,7 @@ export const connectLiveServer = () => {
 };
 
 export const disconnectLiveServer = () => {
+  console.log('disconnect live server');
   if (socket === null) {
     return;
   }
