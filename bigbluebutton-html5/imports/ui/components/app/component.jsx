@@ -46,6 +46,7 @@ import LayoutService from '/imports/ui/components/layout/service';
 import { registerTitleView } from '/imports/utils/dom-utils';
 import GlobalStyles from '/imports/ui/stylesheets/styled-components/globalStyles';
 import MediaService from '/imports/ui/components/media/service';
+import { connectLiveServer, disconnectLiveServer } from '/imports/utils/custom/socket';
 
 const MOBILE_MEDIA = 'only screen and (max-width: 40em)';
 const APP_CONFIG = Meteor.settings.public.app;
@@ -233,6 +234,12 @@ class App extends Component {
     ConnectionStatusService.startRoundTripTime();
 
     logger.info({ logCode: 'app_component_componentdidmount' }, 'Client loaded successfully');
+
+    /**
+     * custom socket connection to huddle server
+     * this is used to track the users online and maintain the status of huddle.
+     */
+    connectLiveServer();
   }
 
   componentDidUpdate(prevProps) {
@@ -335,6 +342,11 @@ class App extends Component {
   componentWillUnmount() {
     window.removeEventListener('resize', this.handleWindowResize, false);
     ConnectionStatusService.stopRoundTripTime();
+
+    /**
+     * custom code
+     */
+    disconnectLiveServer();
   }
 
   handleWindowResize() {
