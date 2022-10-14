@@ -21,6 +21,7 @@ import {
   sortVideoStreams,
 } from '/imports/ui/components/video-provider/stream-sorting';
 import getFromMeetingSettings from '/imports/ui/services/meeting-settings';
+import { sendVideoEnabledMessage, sendVideoDisabledMessage } from '/imports/utils/custom/socket/liveclass-server';
 
 const CAMERA_PROFILES = Meteor.settings.public.kurento.cameraProfiles;
 const MULTIPLE_CAMERAS = Meteor.settings.public.app.enableMultipleCameras;
@@ -142,6 +143,9 @@ class VideoService {
 
   joinedVideo() {
     this.isConnected = true;
+
+    // sent video enabled message via socket to liveclass server
+    sendVideoEnabledMessage();
   }
 
   storeDeviceIds() {
@@ -181,6 +185,9 @@ class VideoService {
     this.isConnecting = false;
     this.deviceId = null;
     this.isConnected = false;
+
+    // sent video disabled message via socket to liveclass server
+    sendVideoDisabledMessage();
   }
 
   stopVideo(cameraId) {

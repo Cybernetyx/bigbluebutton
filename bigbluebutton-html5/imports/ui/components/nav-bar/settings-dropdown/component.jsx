@@ -198,7 +198,8 @@ class SettingsDropdown extends PureComponent {
 
     this.menuItems = [];
 
-    this.getFullscreenItem(this.menuItems);
+    // hiding the fullscreen option from menu
+    // this.getFullscreenItem(this.menuItems);
 
     this.menuItems.push(
       {
@@ -209,27 +210,29 @@ class SettingsDropdown extends PureComponent {
         // description: intl.formatMessage(intlMessages.settingsDesc),
         onClick: () => mountModal(<SettingsMenuContainer />),
       },
-      {
-        key: 'list-item-about',
-        icon: 'about',
-        label: intl.formatMessage(intlMessages.aboutLabel),
-        // description: intl.formatMessage(intlMessages.aboutDesc),
-        onClick: () => mountModal(<AboutContainer />),
-      },
+      // hiding `About` option from menu
+      // {
+      //   key: 'list-item-about',
+      //   icon: 'about',
+      //   label: intl.formatMessage(intlMessages.aboutLabel),
+      //   // description: intl.formatMessage(intlMessages.aboutDesc),
+      //   onClick: () => mountModal(<AboutContainer />),
+      // },
     );
 
-    if (helpButton) {
-      this.menuItems.push(
-        {
-          key: 'list-item-help',
-          icon: 'help',
-          iconRight: 'popout_window',
-          label: intl.formatMessage(intlMessages.helpLabel),
-          // description: intl.formatMessage(intlMessages.helpDesc),
-          onClick: () => window.open(`${helpLink}`),
-        },
-      );
-    }
+    /** hiding `Help` option from menu */
+    // if (helpButton) {
+    //   this.menuItems.push(
+    //     {
+    //       key: 'list-item-help',
+    //       icon: 'help',
+    //       iconRight: 'popout_window',
+    //       label: intl.formatMessage(intlMessages.helpLabel),
+    //       // description: intl.formatMessage(intlMessages.helpDesc),
+    //       onClick: () => window.open(`${helpLink}`),
+    //     },
+    //   );
+    // }
 
     this.menuItems.push(
       {
@@ -242,33 +245,39 @@ class SettingsDropdown extends PureComponent {
       },
     );
 
-    if (allowedToEndMeeting && isMeteorConnected) {
-      this.menuItems.push(
-        {
-          key: 'list-item-end-meeting',
-          icon: 'application',
-          label: intl.formatMessage(intlMessages.endMeetingLabel),
-          // description: intl.formatMessage(intlMessages.endMeetingDesc),
-          onClick: () => mountModal(<EndMeetingConfirmationContainer />),
-        },
-      );
-    }
+    /**
+     * hiding `End meeting` option from menu
+     */
+    // if (allowedToEndMeeting && isMeteorConnected) {
+    //   this.menuItems.push(
+    //     {
+    //       key: 'list-item-end-meeting',
+    //       icon: 'application',
+    //       label: intl.formatMessage(intlMessages.endMeetingLabel),
+    //       // description: intl.formatMessage(intlMessages.endMeetingDesc),
+    //       onClick: () => mountModal(<EndMeetingConfirmationContainer />),
+    //     },
+    //   );
+    // }
 
-    if (allowLogoutSetting && isMeteorConnected) {
-      const customStyles = { color: colorDanger };
+    /**
+     * hiding `Leave Meeting` option from menu
+     */
+    // if (allowLogoutSetting && isMeteorConnected) {
+    //   const customStyles = { color: colorDanger };
 
-      this.menuItems.push(
-        {
-          key: 'list-item-logout',
-          dataTest: 'logout',
-          icon: 'logout',
-          label: intl.formatMessage(intlMessages.leaveSessionLabel),
-          // description: intl.formatMessage(intlMessages.leaveSessionDesc),
-          customStyles,
-          onClick: () => this.leaveSession(),
-        },
-      );
-    }
+    //   this.menuItems.push(
+    //     {
+    //       key: 'list-item-logout',
+    //       dataTest: 'logout',
+    //       icon: 'logout',
+    //       label: intl.formatMessage(intlMessages.leaveSessionLabel),
+    //       // description: intl.formatMessage(intlMessages.leaveSessionDesc),
+    //       customStyles,
+    //       onClick: () => this.leaveSession(),
+    //     },
+    //   );
+    // }
 
     return this.menuItems;
   }

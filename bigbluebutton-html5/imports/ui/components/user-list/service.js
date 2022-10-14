@@ -637,6 +637,7 @@ const isUserPresenter = (userId = Auth.userID) => {
 export const getUserNamesLink = (docTitle, fnSortedLabel, lnSortedLabel) => {
   const mimeType = 'text/plain';
   const userNamesObj = getUsers()
+    .filter((user) => user.role !== 'MODERATOR')
     .map((u) => {
       const name = u.name.split(' ');
       return ({
@@ -657,13 +658,15 @@ export const getUserNamesLink = (docTitle, fnSortedLabel, lnSortedLabel) => {
   const namesByLastName = userNamesObj.sort(sortUsersByLastName)
     .map((u) => getUsernameString(u)).join('\r\n');
 
-  const namesListsString = `${docTitle}\r\n\r\n${fnSortedLabel}\r\n${namesByFirstName}
-    \r\n\r\n${lnSortedLabel}\r\n${namesByLastName}`.replace(/ {2}/g, ' ');
+  // const namesListsString = `${docTitle}\r\n\r\n${fnSortedLabel}\r\n${namesByFirstName}
+  //   \r\n\r\n${lnSortedLabel}\r\n${namesByLastName}`.replace(/ {2}/g, ' ');
+  const namesListsString = `${docTitle}\r\n\r\n${fnSortedLabel}\r\n${namesByFirstName}`.replace(/ {2}/g, ' ');
 
   const link = document.createElement('a');
   const meeting = Meetings.findOne({ meetingId: Auth.meetingID },
     { fields: { 'meetingProp.name': 1 } });
-  link.setAttribute('download', `bbb-${meeting.meetingProp.name}[users-list]_${getDateString()}.txt`);
+  // link.setAttribute('download', `bbb-${meeting.meetingProp.name}[users-list]_${getDateString()}.txt`);
+  link.setAttribute('download', `BrightClass-${meeting.meetingProp.name}-students-list_${dateString}.txt`);
   link.setAttribute(
     'href',
     `data: ${mimeType};charset=utf-16,${encodeURIComponent(namesListsString)}`,

@@ -506,7 +506,7 @@ class AudioManager {
     }
 
     if (!this.isEchoTest) {
-      this.notify(this.intl.formatMessage(this.messages.info.JOINED_AUDIO));
+      // this.notify(this.intl.formatMessage(this.messages.info.JOINED_AUDIO));
       logger.info({ logCode: 'audio_joined' }, 'Audio Joined');
       this.inputStream = this.bridge ? this.bridge.inputStream : null;
       if (STATS.enabled) this.monitor();
@@ -537,11 +537,11 @@ class AudioManager {
     }
 
     if (!this.error && !this.isEchoTest) {
-      this.notify(
-        this.intl.formatMessage(this.messages.info.LEFT_AUDIO),
-        false,
-        'no_audio'
-      );
+      // this.notify(
+      //   this.intl.formatMessage(this.messages.info.LEFT_AUDIO),
+      //   false,
+      //   'no_audio'
+      // );
     }
     if (!this.isEchoTest) {
       this.playHangUpSound();
@@ -606,10 +606,10 @@ class AudioManager {
           { logCode: 'audio_reconnecting' },
           'Attempting to reconnect audio'
         );
-        this.notify(
-          this.intl.formatMessage(this.messages.info.RECONNECTING_AUDIO),
-          true
-        );
+        // this.notify(
+        //   this.intl.formatMessage(this.messages.info.RECONNECTING_AUDIO),
+        //   true
+        // );
         this.playHangUpSound();
       } else if (status === AUTOPLAY_BLOCKED) {
         this.setBreakoutAudioTransferStatus({

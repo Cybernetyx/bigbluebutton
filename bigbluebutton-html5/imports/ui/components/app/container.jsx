@@ -56,6 +56,13 @@ const endMeeting = (code) => {
 };
 
 const AppContainer = (props) => {
+  /** disable right click menu */
+  useEffect(() => {
+    document.addEventListener('contextmenu', (e) => {
+      e.preventDefault();
+    });
+  }, []);
+
   function usePrevious(value) {
     const ref = useRef();
     useEffect(() => {

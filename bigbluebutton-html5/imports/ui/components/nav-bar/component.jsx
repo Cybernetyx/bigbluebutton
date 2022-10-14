@@ -14,6 +14,7 @@ import browserInfo from '/imports/utils/browserInfo';
 import deviceInfo from '/imports/utils/deviceInfo';
 import _ from "lodash";
 import { PANELS, ACTIONS } from '../layout/enums';
+import StudentsMicrophoneContainer from '../custom/StudentsMicrophone/container';
 
 const intlMessages = defineMessages({
   toggleUserListLabel: {
@@ -239,6 +240,7 @@ class NavBar extends Component {
             />
           </Styled.Center>
           <Styled.Right>
+            <StudentsMicrophoneContainer />
             {ConnectionStatusService.isEnabled() ? <ConnectionStatusButton /> : null}
             <SettingsDropdownContainer amIModerator={amIModerator} />
           </Styled.Right>

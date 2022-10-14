@@ -123,7 +123,7 @@ class MutedAlert extends Component {
     this.setState({ visible: false });
     this.speechEvents.stop();
 
-    notify(intl.formatMessage(intlMessages.disableMessage), 'info', 'mute');
+    // notify(intl.formatMessage(intlMessages.disableMessage), 'info', 'mute');
   }
 
   render() {

@@ -169,6 +169,10 @@ class AudioControls extends PureComponent {
       isPresenter,
     } = this.props;
 
+    /** begin: custom code */
+    const { shouldShowAudioButton } = this.props;
+    /** end: custom code */
+
     const label = muted ? intl.formatMessage(intlMessages.unmuteAudio)
       : intl.formatMessage(intlMessages.muteAudio);
 
@@ -204,7 +208,13 @@ class AudioControls extends PureComponent {
           }}
           />
         ) : null}
-        {showMute && isVoiceUser ? toggleMuteBtn : null}
+        {/* begin: original */}
+        {/* {showMute && isVoiceUser ? toggleMuteBtn : null} */}
+        {/* end: original */}
+
+        {/* begin: custom code */}
+        {showMute && isVoiceUser && shouldShowAudioButton ? toggleMuteBtn : null}
+        {/* end: custom code */}
         {
           this.renderJoinLeaveButton()
         }

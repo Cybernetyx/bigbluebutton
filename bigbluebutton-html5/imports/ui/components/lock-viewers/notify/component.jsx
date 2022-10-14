@@ -104,12 +104,15 @@ class LockViewersNotifyComponent extends Component {
           && !lockSettings[key]
           && !rejectedKeys.includes(key));
 
-      if (disabledSettings.length > 0) {
-        notifyLocks(disabledSettings, intlDisableMessages);
-      }
-      if (enableSettings.length > 0) {
-        notifyLocks(enableSettings, intlEnableMessages);
-      }
+      /**
+       * hide enable/disable locks notification
+       */
+      // if (disabledSettings.length > 0) {
+      //   notifyLocks(disabledSettings, intlDisableMessages);
+      // }
+      // if (enableSettings.length > 0) {
+      //   notifyLocks(enableSettings, intlEnableMessages);
+      // }
     }
     if (webcamsOnlyForModerator && !prevWebcamsOnlyForModerator) {
       notify(intl.formatMessage(intlDisableMessages.onlyModeratorWebcam), 'info', 'lock');

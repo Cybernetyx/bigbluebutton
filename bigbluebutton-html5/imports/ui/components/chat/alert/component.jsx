@@ -172,7 +172,10 @@ const ChatAlert = (props) => {
     return null;
   }
 
-  return pushAlertEnabled
+  const disablePushAlert = false;
+
+  // return pushAlertEnabled
+  return disablePushAlert && pushAlertEnabled
     ? unreadMessages.map((timeWindow) => {
       const mappedMessage = Service.mapGroupMessage(timeWindow);
       const content = mappedMessage

@@ -303,21 +303,21 @@ class App extends Component {
           : 'user',
       );
     }
-    if (!prevProps.meetingMuted && meetingMuted) {
-      notify(
-        intl.formatMessage(intlMessages.meetingMuteOn), 'info', 'mute',
-      );
-    }
-    if (prevProps.meetingMuted && !meetingMuted) {
-      notify(
-        intl.formatMessage(intlMessages.meetingMuteOff), 'info', 'unmute',
-      );
-    }
-    if (!prevProps.hasPublishedPoll && hasPublishedPoll) {
-      notify(
-        intl.formatMessage(intlMessages.pollPublishedLabel), 'info', 'polling',
-      );
-    }
+    // if (!prevProps.meetingMuted && meetingMuted) {
+    //   notify(
+    //     intl.formatMessage(intlMessages.meetingMuteOn), 'info', 'mute',
+    //   );
+    // }
+    // if (prevProps.meetingMuted && !meetingMuted) {
+    //   notify(
+    //     intl.formatMessage(intlMessages.meetingMuteOff), 'info', 'unmute',
+    //   );
+    // }
+    // if (!prevProps.hasPublishedPoll && hasPublishedPoll) {
+    //   notify(
+    //     intl.formatMessage(intlMessages.pollPublishedLabel), 'info', 'polling',
+    //   );
+    // }
     if (prevProps.currentUserRole === VIEWER && currentUserRole === MODERATOR) {
       notify(
         intl.formatMessage(intlMessages.promotedLabel), 'info', 'user',

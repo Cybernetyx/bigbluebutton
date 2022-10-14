@@ -28,9 +28,9 @@ const AudioModalButton = styled(Button)`
   & span:first-child {
     display: inline-block;
     color: #1b3c4b;
-    background-color: #f1f8ff;
+    background-color: var(--color-primary-100);
     box-shadow: none;
-    border: 5px solid #f1f8ff;
+    border: 5px solid var(--color-primary-100);
     font-size: 3.5rem;
 
     @media ${smallOnly} {
@@ -42,7 +42,7 @@ const AudioModalButton = styled(Button)`
   &:hover span:first-child,
   &:focus span:first-child {
     border: 5px solid ${colorPrimary};
-    background-color: #f1f8ff;
+    background-color: var(--color-primary-100);
   }
 
   // Modifies the button label text

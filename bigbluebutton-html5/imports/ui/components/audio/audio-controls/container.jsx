@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { withTracker } from 'meteor/react-meteor-data';
 import { withModalMounter } from '/imports/ui/components/common/modal/service';
 import AudioManager from '/imports/ui/services/audio-manager';
@@ -18,16 +18,47 @@ import { layoutSelect } from '/imports/ui/components/layout/context';
 
 import Service from '../service';
 import AppService from '/imports/ui/components/app/service';
+import ActionsBarService from '/imports/ui/components/actions-bar/service';
+import { CustomAppContext } from '../../custom/context/useCustomAppContext';
+import { getUserKneuraID } from '../../../../utils/custom/socket/liveclass-server';
 
 const ROLE_VIEWER = Meteor.settings.public.user.role_viewer;
 const APP_CONFIG = Meteor.settings.public.app;
 
 const AudioControlsContainer = (props) => {
+  const { sessionAttendeesInfo } = useContext(CustomAppContext);
   const {
     users, lockSettings, userLocks, children, ...newProps
   } = props;
   const isRTL = layoutSelect((i) => i.isRTL);
-  return <AudioControls {...{ ...newProps, isRTL }} />;
+  
+  /** begin: original code */
+  // return <AudioControls {...{ ...newProps, isRTL }} />;
+  /** end: original code */
+
+  /** begin: custom code */
+  let shouldShowAudioButton = false;
+
+  if (ActionsBarService.amIModerator()) {
+    shouldShowAudioButton = true;
+  } else {
+    const userKneuraID = getUserKneuraID();
+    const findQuery = (sessionAttendeeInfo) => (
+      sessionAttendeeInfo.userKneuraID === userKneuraID
+    );
+    const attendeeInfo = sessionAttendeesInfo.find(findQuery);
+    if (attendeeInfo) {
+      shouldShowAudioButton = !attendeeInfo.isMicDisabled;
+    }
+  }
+
+  return (
+    <AudioControls
+      {...{ ...newProps, isRTL}}
+      shouldShowAudioButton={shouldShowAudioButton}
+    />
+  );
+  /** end: custom code */
 };
 
 const handleLeaveAudio = () => {

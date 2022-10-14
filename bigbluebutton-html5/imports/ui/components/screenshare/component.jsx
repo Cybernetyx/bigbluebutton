@@ -117,7 +117,7 @@ class ScreenshareComponent extends React.Component {
     // Attaches the local stream if it exists to serve as the local presenter preview
     attachLocalPreviewStream(getMediaElement());
 
-    notify(intl.formatMessage(intlMessages.screenshareStarted), 'info', 'desktop');
+    // notify(intl.formatMessage(intlMessages.screenshareStarted), 'info', 'desktop');
 
     if (getSwapLayout()) {
       toggleSwapLayout(layoutContextDispatch)
@@ -160,7 +160,7 @@ class ScreenshareComponent extends React.Component {
     unsubscribeFromStreamStateChange('screenshare', this.onStreamStateChange);
 
     if (Settings.dataSaving.viewScreenshare) {
-      notify(intl.formatMessage(intlMessages.screenshareEnded), 'info', 'desktop');
+      // notify(intl.formatMessage(intlMessages.screenshareEnded), 'info', 'desktop');
     } else {
       notify(intl.formatMessage(intlMessages.screenshareEndedDueToDataSaving), 'info', 'desktop');
     }

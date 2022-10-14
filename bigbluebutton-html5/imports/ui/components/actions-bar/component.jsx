@@ -79,7 +79,7 @@ class ActionsBar extends PureComponent {
           />
         </Styled.Center>
         <Styled.Right>
-          {!isOldMinimizeButtonEnabled ||
+          {/* {!isOldMinimizeButtonEnabled ||
             (isOldMinimizeButtonEnabled && isLayoutSwapped && !isPresentationDisabled)
             ? (
               <PresentationOptionsContainer
@@ -91,8 +91,8 @@ class ActionsBar extends PureComponent {
                 hasScreenshare={hasScreenshare}
               />
             )
-            : null}
-          {isRaiseHandButtonEnabled
+            : null} */}
+          {isRaiseHandButtonEnabled && !amIModerator
             ? (
               <Styled.RaiseHandButton
                 icon="hand"

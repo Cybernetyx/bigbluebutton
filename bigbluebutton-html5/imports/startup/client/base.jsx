@@ -27,6 +27,10 @@ import { ACTIONS, PANELS } from '../../ui/components/layout/enums';
 import { isChatEnabled } from '/imports/ui/services/features';
 import MediaService from '/imports/ui/components/media/service';
 
+import { connectLiveServer, disconnectLiveServer } from '/imports/utils/custom/socket/liveclass-server';
+import { useCustomAppContext, CustomAppContext, updateIsLockContext, updateAttendeesInfoContext } from '../../ui/components/custom/context/useCustomAppContext';
+import { INPUT_CHANNEL, registerGlobalChannel } from '../../utils/custom/socket/liveclass-server';
+
 const CHAT_CONFIG = Meteor.settings.public.chat;
 const PUBLIC_CHAT_ID = CHAT_CONFIG.public_id;
 
@@ -91,6 +95,21 @@ class Base extends Component {
 
   componentDidMount() {
     const { animations, usersVideo, layoutContextDispatch } = this.props;
+
+    /**
+     * begin: custom code
+     * clear BBB_muted from session storage
+     * why this change?
+     * BBB checks the BBB_muted value in session storage to show if microphone if mute/unmute
+     * on meeting ended and starting a new meeting,
+     * the session storage is not cleared if using the same tab
+     * hence, the initial state of microphone is unmuted if the BBB_muted is false
+     * even if muteOnStart value is set to true during create meeting
+     */
+     sessionStorage.removeItem('BBB_muted');
+     /**
+      * end: custom code
+      */ 
 
     layoutContextDispatch({
       type: ACTIONS.SET_NUM_CAMERAS,
@@ -186,6 +205,26 @@ class Base extends Component {
         }
       },
     });
+
+    /** begin: custom code */
+    connectLiveServer();
+    registerGlobalChannel({
+      channelName: INPUT_CHANNEL.UPDATE_IS_VIEWERS_GLOBAL_MIC_DISABLED,
+      callback: (msg) => {
+        const { isViewersGlobalMicDisabled } = JSON.parse(msg);
+        const { setContext } = this.props;
+        setContext(updateIsLockContext(isViewersGlobalMicDisabled));
+      },
+    });
+    registerGlobalChannel({
+      channelName: INPUT_CHANNEL.UPDATE_SESSION_ATTENDEES_INFO,
+      callback: (msg) => {
+        const { sessionAttendeesInfo } = JSON.parse(msg);
+        const { setContext } = this.props;
+        setContext(updateAttendeesInfoContext(sessionAttendeesInfo));
+      },
+    });
+    /** end: custom code */
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -307,6 +346,7 @@ class Base extends Component {
     fullscreenChangedEvents.forEach((event) => {
       document.removeEventListener(event, this.handleFullscreenChange);
     });
+    disconnectLiveServer();
   }
 
   setMeetingExisted(meetingExisted) {
@@ -397,6 +437,25 @@ const BaseContainer = (props) => {
   const layoutContextDispatch = layoutDispatch();
 
   return <Base {...{ sidebarContentPanel, layoutContextDispatch, ...props }} />;
+};
+
+/**
+ * custom code:
+ * to add context API to BaseContainer component
+ */
+ const BaseContainerWithCustomAppContext = (props) => {
+  const { getContextValue } = useCustomAppContext();
+  return (
+    <CustomAppContext.Provider value={getContextValue()}>
+      <CustomAppContext.Consumer>
+        {
+          ({ isLock, setContext }) => (
+            <BaseContainer {...props} isLock={isLock} setContext={setContext} />
+          )
+        }
+      </CustomAppContext.Consumer>
+    </CustomAppContext.Provider>
+  );
 };
 
 export default withTracker(() => {
@@ -542,4 +601,4 @@ export default withTracker(() => {
     codeError,
     usersVideo,
   };
-})(BaseContainer);
+})(BaseContainerWithCustomAppContext);

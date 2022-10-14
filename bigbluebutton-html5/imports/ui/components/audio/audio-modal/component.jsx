@@ -172,6 +172,16 @@ class AudioModal extends Component {
     } = this.props;
 
     if (!isUsingAudio) {
+      /**
+       * begin: custom code
+       * since microphone permission is always
+       * On joining, request for microphone permission always
+       */
+      return this.handleJoinMicrophone();
+      /**
+       * end: custom code
+       */
+
       if (forceListenOnlyAttendee || audioLocked) return this.handleJoinListenOnly();
 
       if (joinFullAudioImmediately && !listenOnlyMode) return this.handleJoinMicrophone();
@@ -369,16 +379,32 @@ class AudioModal extends Component {
       listenOnlyMode,
       forceListenOnlyAttendee,
       joinFullAudioImmediately,
-      audioLocked,
+      // audioLocked,
       isMobileNative,
       formattedDialNum,
       isRTL,
     } = this.props;
 
-    const showMicrophone = forceListenOnlyAttendee || audioLocked;
+    /** begin: original code */
+    // const showMicrophone = forceListenOnlyAttendee || audioLocked;
+    /** end: original code */
+
+    /** begin: custom code */
+    /**
+     * for a moderator to be able to mute/unmute the viewer,
+     * microphone permission of viewer is always required.
+     * So,
+     * always show microphone dialog, irrespective of the forceListenOnlyAttendee/audioLocked configs
+     */
+    const showMicrophone = false;
+    const audioLocked = false;
+    /** end: custom code */
 
     const arrow = isRTL ? '←' : '→';
     const dialAudioLabel = `${intl.formatMessage(intlMessages.audioDialTitle)} ${arrow}`;
+
+    /** hide listen only mode option */
+    const hideListenOnlyMode = false;
 
     return (
       <div>
@@ -405,7 +431,7 @@ class AudioModal extends Component {
                 </span>
               </>
               )}
-          {listenOnlyMode
+          {hideListenOnlyMode && listenOnlyMode
               && (
               <>
                 <Styled.AudioModalButton
@@ -459,7 +485,12 @@ class AudioModal extends Component {
         </Styled.Connecting>
       );
     }
-    return content ? this.contents[content].component() : this.renderAudioOptions();
+    // return content ? this.contents[content].component() : this.renderAudioOptions();
+    /**
+     * hiding/bypassing audio locked dialog,
+     * so that always microphone selection page will be displayed
+     * irrespective of the lockSettingsDisableMic paramter in create meeting */
+     return content && (content !== 'audioLocked') ? this.contents[content].component() : this.renderAudioOptions();
   }
 
   renderEchoTest() {

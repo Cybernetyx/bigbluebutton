@@ -1,3 +1,4 @@
+import React, { useContext } from 'react';
 import { withTracker } from 'meteor/react-meteor-data';
 import PropTypes from 'prop-types';
 import Auth from '/imports/ui/services/auth';
@@ -11,6 +12,8 @@ import { defineMessages, injectIntl } from 'react-intl';
 import { notify } from '/imports/ui/services/notification';
 import UserOptions from './component';
 import { layoutSelect } from '/imports/ui/components/layout/context';
+import { updateLockSettings } from '/imports/ui/components/lock-viewers/service';
+import { CustomAppContext } from '../../../../custom/context/useCustomAppContext';
 
 const propTypes = {
   users: PropTypes.arrayOf(Object).isRequired,
@@ -37,6 +40,10 @@ const UserOptionsContainer = withTracker((props) => {
     users,
     clearAllEmojiStatus,
     intl,
+    isLock,
+    isGlobalMicMuted,
+    setContext,
+    sessionAttendeesInfo,
   } = props;
 
   const toggleStatus = () => {
@@ -62,8 +69,60 @@ const UserOptionsContainer = withTracker((props) => {
   };
 
   const isRTL = layoutSelect((i) => i.isRTL);
+  const meeting = Meetings.findOne({ meetingId: Auth.meetingID });
 
   return {
+    isLock,
+    isGlobalMicMuted,
+    setContext,
+    customMuteAllUsers: () => {
+      users.forEach((user) => {
+        if (user.role !== 'MODERATOR') {
+          const voiceUser = UserListService.curatedVoiceUser(user.userId);
+          const subjectVoiceUser = voiceUser;
+
+          const hasAuthority = true;
+
+          const allowedToMuteAudio = hasAuthority
+            && subjectVoiceUser.isVoiceUser
+            && !subjectVoiceUser.isMuted
+            && !subjectVoiceUser.isListenOnly;
+
+          if (allowedToMuteAudio) {
+            UserListService.toggleVoice(user.userId);
+          }
+        }
+      });
+    },
+    customUnmuteAllUsers: () => {
+      users.forEach((user) => {
+        if (user.role !== 'MODERATOR') {
+          const voiceUser = UserListService.curatedVoiceUser(user.userId);
+          const subjectVoiceUser = voiceUser;
+
+          const hasAuthority = true;
+          const allowedToUnmuteAudio = hasAuthority
+            && subjectVoiceUser.isVoiceUser
+            && !subjectVoiceUser.isListenOnly
+            && subjectVoiceUser.isMuted;
+
+          if (allowedToUnmuteAudio) {
+            /**
+             * user is allowed to be unmuted only if isMicDisabled is false for the user
+             */
+            const { extId } = user;
+            const userKneuraId = extId.split(',')[0];
+            const findQuery = (sessionAttendeeInfo) => (
+              sessionAttendeeInfo.userKneuraID === userKneuraId
+            );
+            const attendeeInfo = sessionAttendeesInfo.find(findQuery);
+            if (!attendeeInfo.isMicDisabled) {
+              UserListService.toggleVoice(user.userId);
+            }
+          }
+        }
+      });
+    },
     toggleMuteAllUsers: () => {
       UserListService.muteAllUsers(Auth.userID);
       if (isMeetingMuteOnStart()) {
@@ -84,6 +143,39 @@ const UserOptionsContainer = withTracker((props) => {
         extraInfo: { logType: 'moderator_action' },
       }, 'moderator enabled meeting mute, all users muted except presenter');
     },
+    lockAllUsers: (users) => {
+      users.forEach((user) => {
+        if (!user.locked && user.role !== 'MODERATOR') {
+          UserListService.toggleUserLock(user.userId, true);
+        }
+      })
+    },
+    unlockAllUsers: (users) => {
+      users.forEach((user) => {
+        if (user.locked && user.role !== 'MODERATOR') {
+          UserListService.toggleUserLock(user.userId, false);
+        }
+      })
+    },
+    meeting,
+    toggleMicrophoneLockSettings: () => {
+      const { lockSettingsProps } = meeting;
+      const isMicDisabled = lockSettingsProps.disableMic;
+      lockSettingsProps.disableMic = !lockSettingsProps.disableMic;
+      updateLockSettings(lockSettingsProps);
+
+      /** toggling will enable microphone */
+      if (isMicDisabled) {
+        users.filter((user) => user.role !== 'MODERATOR').forEach((user) => {
+          /** is user is not locked, lock the user */
+          if (!user.locked) {
+            UserListService.toggleUserLock(user.userId, true);
+          }
+          /** unmute all users */
+          UserListService.toggleVoice(user.userId);
+        })
+      }
+    },
     toggleStatus,
     isMeetingMuted: isMeetingMuteOnStart(),
     amIModerator: ActionsBarService.amIModerator(),
@@ -101,4 +193,22 @@ const UserOptionsContainer = withTracker((props) => {
 
 UserOptionsContainer.propTypes = propTypes;
 
-export default injectIntl(UserOptionsContainer);
+const UserOptionsContainerWithData = (props) => {
+  const {
+    isGlobalMicMuted,
+    setContext,
+    isLock,
+    sessionAttendeesInfo,
+  } = useContext(CustomAppContext);
+  return (
+    <UserOptionsContainer
+      {...props}
+      isLock={isLock}
+      isGlobalMicMuted={isGlobalMicMuted}
+      setContext={setContext}
+      sessionAttendeesInfo={sessionAttendeesInfo}
+    />
+  );
+};
+
+export default injectIntl(UserOptionsContainerWithData);

@@ -32,8 +32,8 @@ const defaultProps = {
 };
 
 const intlMessages = defineMessages({
-  usersTitle: {
-    id: 'app.userList.usersTitle',
+  participantsTitle: {
+    id: 'app.userList.participantsTitle',
     description: 'Title for the Header',
   },
 });
@@ -205,7 +205,7 @@ class UserParticipants extends Component {
             ? (
               <Styled.Container>
                 <Styled.SmallTitle>
-                  {intl.formatMessage(intlMessages.usersTitle)}
+                  {intl.formatMessage(intlMessages.participantsTitle)}
                   {users.length > 0 ? ` (${users.length})` : null}
                 </Styled.SmallTitle>
                 {currentUser?.role === ROLE_MODERATOR

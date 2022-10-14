@@ -90,6 +90,8 @@ class TimeWindowChatItem extends PureComponent {
     ChatLogger.debug('TimeWindowChatItem::componentWillUnmount::state', { ...this.state });
   }
 
+  filterChatClearMessage = (message) => message.text === CHAT_CLEAR_MESSAGE;
+
   renderSystemMessage() {
     const {
       messages,
@@ -109,7 +111,7 @@ class TimeWindowChatItem extends PureComponent {
         key={`time-window-chat-item-${messageKey}`}
         ref={element => this.itemRef = element} >
         <Styled.Messages>
-          {messages.map((message) => (
+          {messages.filter(this.filterChatClearMessage).map((message) => (
             message.text !== ''
               ? (
                 <Styled.SystemMessageChatItem

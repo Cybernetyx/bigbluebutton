@@ -13,6 +13,7 @@ import Styled from './styles';
 import { getUserNamesLink } from '/imports/ui/components/user-list/service';
 import Settings from '/imports/ui/services/settings';
 import { isBreakoutRoomsEnabled, isLearningDashboardEnabled } from '/imports/ui/services/features';
+import { updateIsGlobalMicMutedContext } from '../../../../custom/context/useCustomAppContext';
 
 const propTypes = {
   intl: PropTypes.shape({
@@ -137,7 +138,12 @@ class UserOptions extends PureComponent {
     this.clearStatusId = _.uniqueId('list-item-');
     this.muteId = _.uniqueId('list-item-');
     this.muteAllId = _.uniqueId('list-item-');
+    this.customMuteAllId = _.uniqueId('list-item-');
+    this.customUnmuteAllId = _.uniqueId('list-item-');
     this.lockId = _.uniqueId('list-item-');
+    this.lockAllId = _.uniqueId('list-item-');
+    this.unlockAllId = _.uniqueId('list-item-');
+    this.toggleUsersMicrophoneId = _.uniqueId('list-item-');
     this.guestPolicyId = _.uniqueId('list-item-');
     this.createBreakoutId = _.uniqueId('list-item-');
     this.learningDashboardId = _.uniqueId('list-item-');
@@ -208,6 +214,8 @@ class UserOptions extends PureComponent {
       mountModal,
       toggleStatus,
       toggleMuteAllUsers,
+      customMuteAllUsers,
+      customUnmuteAllUsers,
       toggleMuteAllUsersExceptPresenter,
       meetingIsBreakout,
       hasBreakoutRoom,
@@ -215,6 +223,12 @@ class UserOptions extends PureComponent {
       openLearningDashboardUrl,
       amIModerator,
       users,
+      lockAllUsers,
+      unlockAllUsers,
+      toggleMicrophoneLockSettings,
+      isLock,
+      isGlobalMicMuted,
+      setContext,
       isMeteorConnected,
       dynamicGuestPolicy,
     } = this.props;
@@ -235,15 +249,35 @@ class UserOptions extends PureComponent {
 
     if (isMeteorConnected) {
       if (!meetingIsBreakout) {
-        this.menuItems.push({
-          key: this.muteAllId,
-          label: intl.formatMessage(intlMessages[isMeetingMuted ? 'unmuteAllLabel' : 'muteAllLabel']),
-          // description: intl.formatMessage(intlMessages[isMeetingMuted ? 'unmuteAllDesc' : 'muteAllDesc']),
-          onClick: toggleMuteAllUsers,
-          icon: isMeetingMuted ? 'unmute' : 'mute',
-        });
+        // this.menuItems.push({
+        //   key: this.muteAllId,
+        //   label: intl.formatMessage(intlMessages[isMeetingMuted ? 'unmuteAllLabel' : 'muteAllLabel']),
+        //   // description: intl.formatMessage(intlMessages[isMeetingMuted ? 'unmuteAllDesc' : 'muteAllDesc']),
+        //   onClick: toggleMuteAllUsers,
+        //   icon: isMeetingMuted ? 'unmute' : 'mute',
+        // });
 
-        if (!isMeetingMuted) {
+        /** custom code: show mute/unmute all students if global mic enabled */
+        if (!isLock) {
+          this.menuItems.push({
+            key: this.muteAllId,
+            label: intl.formatMessage(intlMessages[isMeetingMuted ? 'unmuteAllLabel' : 'muteAllLabel']),
+            // description: intl.formatMessage(intlMessages[isMeetingMuted ? 'unmuteAllDesc' : 'muteAllDesc']),
+            onClick: () => {
+              if (isGlobalMicMuted) {
+                customUnmuteAllUsers();
+                setContext(updateIsGlobalMicMutedContext(false));
+              } else {
+                customMuteAllUsers();
+                setContext(updateIsGlobalMicMutedContext(true));
+              }
+            },
+            icon: isMeetingMuted ? 'unmute' : 'mute',
+          });
+        }
+
+        /** hide the menu options: hence adding false in the if condition */
+        if (false && !isMeetingMuted) {
           this.menuItems.push({
             key: this.muteId,
             label: intl.formatMessage(intlMessages.muteAllExceptPresenterLabel),

@@ -7,6 +7,7 @@ import TalkingIndicator from './component';
 import { makeCall } from '/imports/ui/services/api';
 import { meetingIsBreakout } from '/imports/ui/components/app/service';
 import { layoutSelectInput, layoutDispatch } from '../../layout/context';
+import UserListService from '/imports/ui/components/user-list/service';
 
 const APP_CONFIG = Meteor.settings.public.app;
 const { enableTalkingIndicator } = APP_CONFIG;
@@ -71,14 +72,33 @@ export default withTracker(() => {
     }
   }
 
+  /** begin: original code */
+  // const muteUser = debounce((id) => {
+  //   const user = VoiceUsers.findOne({ meetingId, intId: id }, {
+  //     fields: {
+  //       muted: 1,
+  //     },
+  //   });
+  //   if (user.muted) return;
+  //   makeCall('toggleVoice', id);
+  // }, TALKING_INDICATOR_MUTE_INTERVAL, { leading: true, trailing: false });
+  /** end: original code */
+
+  /** custom code: disable students mic */
   const muteUser = debounce((id) => {
     const user = VoiceUsers.findOne({ meetingId, intId: id }, {
       fields: {
         muted: 1,
       },
     });
-    if (user.muted) return;
+    if (user.muted) {
+      /** enable and unmute students mic */
+      UserListService.toggleUserLock(id, false);
+      makeCall('toggleVoice', id);
+      return;
+    };
     makeCall('toggleVoice', id);
+    UserListService.toggleUserLock(id, true);
   }, TALKING_INDICATOR_MUTE_INTERVAL, { leading: true, trailing: false });
 
   return {

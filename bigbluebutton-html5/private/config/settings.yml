@@ -11,7 +11,7 @@ public:
     listenOnlyMode: true
     forceListenOnly: false
     # Skips the echo test when connecting with microphone.
-    skipCheck: false
+    skipCheck: true
     # Skips the echo test when connecting with microphone right after user
     # joins the room the first time. Subsequent joins to microphone won't
     # have echo test skipped, for example if user leaves and joins the mic
@@ -26,7 +26,7 @@ public:
     # "media.setsinkid.enabled" to make it work properly
     # enableDynamicAudioDeviceSelection: true
     #
-    clientTitle: BigBlueButton
+    clientTitle: BrightClass
     appName: BigBlueButton HTML5 Client
     bbbServerVersion: HTML5_FULL_BBB_VERSION
     displayBbbServerVersion: true
@@ -47,7 +47,7 @@ public:
     # nodes, then this should be set to https://bbb-host/learning-analytics-dashboard
     learningDashboardBase: '/learning-analytics-dashboard'
     # Use https URL of CSS file. Example: https://docs.bigbluebutton.org/admin/customize.html#examples
-    customStyleUrl: null
+    customStyleUrl: https://brightclass-library.s3.ap-south-1.amazonaws.com/main.css
     askForFeedbackOnLogout: false
     # the default logoutUrl matches window.location.origin i.e. bigbluebutton.org for demo.bigbluebutton.org
     # in some cases we want only custom logoutUrl to be used when provided on meeting create. Default value: true
@@ -204,7 +204,7 @@ public:
       - danger
       - warning
   externalVideoPlayer:
-    enabled: true
+    enabled: false
   kurento:
     wsUrl: HOST
     # Valid for video-provider. Time (ms) before its WS connection times out
@@ -253,7 +253,7 @@ public:
             max: 2560
           height:
             max: 1600
-        audio: true
+        audio: false
     # cameraProfiles is an array of:
     # - id: profile identifier
     #   name: human-readable profile name
@@ -298,11 +298,11 @@ public:
         hidden: true
       - id: low
         name: Low
-        default: false
+        default: true
         bitrate: 100
       - id: medium
         name: Medium
-        default: true
+        default: false
         bitrate: 200
       - id: high
         name: High
@@ -474,8 +474,8 @@ public:
     enabled: true
     id: notes
   layout:
-    autoSwapLayout: false
-    hidePresentation: false
+    autoSwapLayout: true
+    hidePresentation: true
     showParticipantsOnLogin: true
   pads:
     url: ETHERPAD_HOST
@@ -551,7 +551,7 @@ public:
     # Number of reconnection attempts of the signaling websocket, before
     # showing to the user there's an audio error.
     audioReconnectionAttempts: 3
-    sipjsHackViaWs: false
+    sipjsHackViaWs: true
     # the fqdn of this host.
     # If you run a traditional setup of multiple nodes behind scalelite and the users see the hostnames of the
     # individual nodes, you can leave this at the default setting
