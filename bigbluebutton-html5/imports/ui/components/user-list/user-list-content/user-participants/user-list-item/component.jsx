@@ -409,50 +409,50 @@ class UserListItem extends PureComponent {
         },
         icon: 'clear_status',
       },
-      {
-        allowed: allowedToMuteAudio
-          && isMeteorConnected
-          && !meetingIsBreakout
-          && !showNestedOptions,
-        key: 'mute',
-        label: intl.formatMessage(messages.MuteUserAudioLabel),
-        onClick: () => {
-          this.onActionsHide(toggleVoice(user.userId));
-          this.handleClose();
-        },
-        icon: 'mute',
-      },
-      {
-        allowed: allowedToUnmuteAudio
-          && !userLocks.userMic
-          && isMeteorConnected
-          && !meetingIsBreakout
-          && !showNestedOptions,
-        key: 'unmute',
-        label: intl.formatMessage(messages.UnmuteUserAudioLabel),
-        onClick: () => {
-          this.onActionsHide(toggleVoice(user.userId));
-          this.handleClose();
-        },
-        icon: 'unmute',
-      },
-      {
-        allowed: allowedToChangeWhiteboardAccess
-          && !user.presenter
-          && isMeteorConnected
-          && !isDialInUser
-          && !showNestedOptions,
-        key: 'changeWhiteboardAccess',
-        label: user.whiteboardAccess
-          ? intl.formatMessage(messages.removeWhiteboardAccess)
-          : intl.formatMessage(messages.giveWhiteboardAccess),
-        onClick: () => {
-          WhiteboardService.changeWhiteboardAccess(user.userId, !user.whiteboardAccess);
-          this.handleClose();
-        },
-        icon: 'pen_tool',
-        dataTest: 'changeWhiteboardAccess',
-      },
+      // {
+      //   allowed: allowedToMuteAudio
+      //     && isMeteorConnected
+      //     && !meetingIsBreakout
+      //     && !showNestedOptions,
+      //   key: 'mute',
+      //   label: intl.formatMessage(messages.MuteUserAudioLabel),
+      //   onClick: () => {
+      //     this.onActionsHide(toggleVoice(user.userId));
+      //     this.handleClose();
+      //   },
+      //   icon: 'mute',
+      // },
+      // {
+      //   allowed: allowedToUnmuteAudio
+      //     && !userLocks.userMic
+      //     && isMeteorConnected
+      //     && !meetingIsBreakout
+      //     && !showNestedOptions,
+      //   key: 'unmute',
+      //   label: intl.formatMessage(messages.UnmuteUserAudioLabel),
+      //   onClick: () => {
+      //     this.onActionsHide(toggleVoice(user.userId));
+      //     this.handleClose();
+      //   },
+      //   icon: 'unmute',
+      // },
+      // {
+      //   allowed: allowedToChangeWhiteboardAccess
+      //     && !user.presenter
+      //     && isMeteorConnected
+      //     && !isDialInUser
+      //     && !showNestedOptions,
+      //   key: 'changeWhiteboardAccess',
+      //   label: user.whiteboardAccess
+      //     ? intl.formatMessage(messages.removeWhiteboardAccess)
+      //     : intl.formatMessage(messages.giveWhiteboardAccess),
+      //   onClick: () => {
+      //     WhiteboardService.changeWhiteboardAccess(user.userId, !user.whiteboardAccess);
+      //     this.handleClose();
+      //   },
+      //   icon: 'pen_tool',
+      //   dataTest: 'changeWhiteboardAccess',
+      // },
       {
         allowed: allowedToSetPresenter && isMeteorConnected && !isDialInUser && !showNestedOptions,
         key: 'setPresenter',
@@ -488,16 +488,30 @@ class UserListItem extends PureComponent {
         icon: 'user',
         dataTest: 'demoteToViewer',
       },
+      // {
+      //   allowed: allowedToChangeUserLockStatus && isMeteorConnected && !showNestedOptions,
+      //   key: 'unlockUser',
+      //   label: userLocked ? intl.formatMessage(messages.UnlockUserLabel, { 0: user.name })
+      //     : intl.formatMessage(messages.LockUserLabel, { 0: user.name }),
+      //   onClick: () => {
+      //     this.onActionsHide(toggleUserLock(user.userId, !userLocked));
+      //     this.handleClose();
+      //   },
+      //   icon: userLocked ? 'unlock' : 'lock',
+      //   dataTest: 'unlockUserButton',
+      // },
       {
         allowed: allowedToChangeUserLockStatus && isMeteorConnected && !showNestedOptions,
         key: 'unlockUser',
-        label: userLocked ? intl.formatMessage(messages.UnlockUserLabel, { 0: user.name })
-          : intl.formatMessage(messages.LockUserLabel, { 0: user.name }),
+        label: allowedToUnmuteAudio ? 'Unmute' : 'Mute',
         onClick: () => {
-          this.onActionsHide(toggleUserLock(user.userId, !userLocked));
-          this.handleClose();
+          if (allowedToUnmuteAudio) {
+            this.props.customUnmuteUser();
+          } else {
+            this.props.customMuteUser();
+          }
         },
-        icon: userLocked ? 'unlock' : 'lock',
+        icon: allowedToUnmuteAudio ? 'unmute' : 'mute',
         dataTest: 'unlockUserButton',
       },
       {
@@ -725,7 +739,8 @@ class UserListItem extends PureComponent {
       );
     }
 
-    if (isThisMeetingLocked && user.locked && user.role !== ROLE_MODERATOR) {
+    /** Hide lock */
+    if (false && isThisMeetingLocked && user.locked && user.role !== ROLE_MODERATOR) {
       userNameSub.push(
         <span key={_.uniqueId('lock-')}>
           <Icon iconName="lock" />

@@ -5,6 +5,7 @@ import Auth from '/imports/ui/services/auth';
 import UserListItem from './component';
 import UserListService from '/imports/ui/components/user-list/service';
 import { layoutDispatch } from '../../../../layout/context';
+import { sendStoreMuteOne, sendStoreUnmuteOne } from '../../../../../../utils/custom/socket/liveclass-server';
 
 const UserListItemContainer = (props) => {
   const layoutContextDispatch = layoutDispatch();
@@ -22,6 +23,47 @@ const UserListItemContainer = (props) => {
     hasPrivateChatBetweenUsers,
   } = UserListService;
 
+  const { user } = this.props;
+
+  const customMuteUser = () => {
+    const voiceUser = UserListService.curatedVoiceUser(user.userId);
+    const subjectVoiceUser = voiceUser;
+
+    const hasAuthority = true;
+
+    const allowedToMuteAudio = hasAuthority
+      && subjectVoiceUser.isVoiceUser
+      && !subjectVoiceUser.isMuted
+      && !subjectVoiceUser.isListenOnly;
+
+    const { extId } = user;
+    const userKneuraID = extId.split(',')[0];
+
+    if (allowedToMuteAudio) {
+      UserListService.toggleVoice(user.userId);
+      sendStoreMuteOne({ userKneuraID });
+    }
+  };
+  const customUnmuteUser = () => {
+    const voiceUser = UserListService.curatedVoiceUser(user.userId);
+    const subjectVoiceUser = voiceUser;
+
+    const hasAuthority = true;
+
+    const allowedToUnmuteAudio = hasAuthority
+      && subjectVoiceUser.isVoiceUser
+      && subjectVoiceUser.isMuted
+      && !subjectVoiceUser.isListenOnly;
+
+    const { extId } = user;
+    const userKneuraID = extId.split(',')[0];
+
+    if (allowedToUnmuteAudio) {
+      UserListService.toggleVoice(user.userId);
+      sendStoreUnmuteOne({ userKneuraID });
+    }
+  };
+
   return <UserListItem {
     ...{
       layoutContextDispatch,
@@ -35,6 +77,8 @@ const UserListItemContainer = (props) => {
       normalizeEmojiName,
       getGroupChatPrivate,
       hasPrivateChatBetweenUsers,
+      customMuteUser,
+      customUnmuteUser,
       ...props,
     }
   } />;
