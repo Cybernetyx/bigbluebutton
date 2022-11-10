@@ -1,10 +1,8 @@
 import React from 'react';
-import Button from '/imports/ui/components/button/component';
 import MutedIcon from './MutedIcon';
 import UnmuteIcon from './UnmutedIcon';
-import cx from 'classnames';
-import { styles } from '../../nav-bar/styles.scss';
-import TooltipContainer from '/imports/ui/components/tooltip/container';
+// import { styles } from './styles.scss';
+import TooltipContainer from '/imports/ui/components/common/tooltip/container';
 
 const StudentsMicrophone = (props) => {
   const { lockSettingsProps, toggleMicrophoneLockSettings, isLock } = props;
@@ -13,9 +11,9 @@ const StudentsMicrophone = (props) => {
     ? 'Enable students microphone'
     : 'Disable students microphone';
 
-  const toggleBtnClasses = {};
-  toggleBtnClasses[styles.btn] = false;
-  toggleBtnClasses[styles.btnWithNotificationDot] = false;
+  // const toggleBtnClasses = {};
+  // toggleBtnClasses[styles.btn] = false;
+  // toggleBtnClasses[styles.btnWithNotificationDot] = false;
 
   const containerStyle = { display: 'flex', justifyContent: 'center', alignItems: 'center', cursor: 'pointer' };
 
