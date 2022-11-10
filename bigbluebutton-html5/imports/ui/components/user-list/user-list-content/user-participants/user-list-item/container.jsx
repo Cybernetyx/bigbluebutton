@@ -23,7 +23,7 @@ const UserListItemContainer = (props) => {
     hasPrivateChatBetweenUsers,
   } = UserListService;
 
-  const { user } = this.props;
+  const { user } = props;
 
   const customMuteUser = () => {
     const voiceUser = UserListService.curatedVoiceUser(user.userId);
