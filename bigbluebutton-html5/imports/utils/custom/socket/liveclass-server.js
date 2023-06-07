@@ -3,6 +3,7 @@ import io from 'socket.io-client';
 import CONFIG from '../../../../config';
 import Service from '../../../ui/components/audio/service';
 import AudioManager from '/imports/ui/services/audio-manager';
+import UserListService from '/imports/ui/components/user-list/service';
 
 const { LIVE_CLASS_SERVER_URL } = CONFIG;
 
@@ -110,6 +111,37 @@ export const handleAudioConnection = () => {
   }
 };
 
+/**
+ * Note:
+ * toggle microphone of self
+ * @param {*} msg
+ */
+export const handleToggleMicrophoneSelf = (msg) => {
+  console.log('debug:bbb received', msg);
+
+  const users = UserListService.getUsers();
+  const user = users.find((user) => user.userId === Auth.userID);
+  if (!user) {
+    return;
+  }
+
+  const { extId, userId } = user;
+  const userKneuraID = extId.split(',')[0];
+
+  if (msg === INPUT_MESSAGE.ENABLE_MICROPHONE) {
+    console.log('debug:bbb received enable microphone');
+    UserListService.toggleVoice(userId);
+    sendStoreUnmuteOne({ userKneuraID });
+  } else if (msg === INPUT_MESSAGE.DISABLE_MICROPHONE) {
+    console.log('debug:bbb received disable microphone', {
+      userKneuraID,
+      userId,
+    });
+    UserListService.toggleVoice(userId);
+    sendStoreMuteOne({ userKneuraID });
+  }
+};
+
 export const initBBBNamespaceListeners = () => {
   socket.on('connect', () => {
     console.log('debug:bbb connected', socket.id);
@@ -119,14 +151,7 @@ export const initBBBNamespaceListeners = () => {
     console.log(`debug:connect_error due to ${err.message}`);
     console.log('debug:', err);
   });
-  socket.on(INPUT_CHANNEL.TOGGLE_MICROPHONE_TO, (msg) => {
-    console.log('debug:bbb received', msg);
-    // if (msg === INPUT_MESSAGE.ENABLE_MICROPHONE) {
-    //   Service.enableMicrophone();
-    // } else if (msg === INPUT_MESSAGE.DISABLE_MICROPHONE) {
-    //   Service.disableMicrophone();
-    // }
-  });
+  socket.on(INPUT_CHANNEL.TOGGLE_MICROPHONE_TO, handleToggleMicrophoneSelf);
 };
 
 export const connectBBBNamespace = () => {
