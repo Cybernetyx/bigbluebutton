@@ -17,9 +17,12 @@ const StudentsMicrophoneContainer = (props) => {
     setLockSettingsProps(meeting.lockSettingsProps);
   }, []);
 
+  /**
+   * userId: 'w_n4dkwizeg9wv' (Note: it is not knueraId of the user)
+   */
   const customMuteAllUsers = () => {
     users.forEach((user) => {
-      console.log('customMuteAllUsers, userId', user.userId);
+      console.log('customMuteAllUsers, user', user);
       if (user.role !== 'MODERATOR') {
         const voiceUser = UserListService.curatedVoiceUser(user.userId);
         const subjectVoiceUser = voiceUser;
