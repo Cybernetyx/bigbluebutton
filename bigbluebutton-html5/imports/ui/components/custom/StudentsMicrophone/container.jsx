@@ -19,6 +19,7 @@ const StudentsMicrophoneContainer = (props) => {
 
   const customMuteAllUsers = () => {
     users.forEach((user) => {
+      console.log('customMuteAllUsers, userId', user.userId);
       if (user.role !== 'MODERATOR') {
         const voiceUser = UserListService.curatedVoiceUser(user.userId);
         const subjectVoiceUser = voiceUser;
