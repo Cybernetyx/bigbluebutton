@@ -129,11 +129,17 @@ export const handleToggleMicrophoneSelf = (msg) => {
   const { extId, userId } = user;
   const userKneuraID = extId.split(',')[0];
 
-  if (msg === INPUT_MESSAGE.ENABLE_MICROPHONE) {
+  const voiceUser = UserListService.curatedVoiceUser(user.userId);
+  const subjectVoiceUser = voiceUser;
+
+  if (msg === INPUT_MESSAGE.ENABLE_MICROPHONE && subjectVoiceUser.isMuted) {
     console.log('debug:bbb received enable microphone');
     UserListService.toggleVoice(userId);
     sendStoreUnmuteOne({ userKneuraID });
-  } else if (msg === INPUT_MESSAGE.DISABLE_MICROPHONE) {
+  } else if (
+    msg === INPUT_MESSAGE.DISABLE_MICROPHONE &&
+    !subjectVoiceUser.isMuted
+  ) {
     console.log('debug:bbb received disable microphone', {
       userKneuraID,
       userId,
