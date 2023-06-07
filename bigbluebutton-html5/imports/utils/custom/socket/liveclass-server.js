@@ -98,7 +98,10 @@ export const handleAudioConnection = () => {
     console.log('debug: audio is not connected');
     setTimeout(() => {
       if (!Service.isConnected()) {
-        console.log('debug: 5s after connect: audio is not connected:', Service.isConnected());
+        console.log(
+          'debug: 5s after connect: audio is not connected:',
+          Service.isConnected()
+        );
         AudioManager.joinMicrophone();
       } else {
         console.log('debug: 5s after connect: audio is connected');
@@ -115,6 +118,14 @@ export const initBBBNamespaceListeners = () => {
   socket.on('connect_error', (err) => {
     console.log(`debug:connect_error due to ${err.message}`);
     console.log('debug:', err);
+  });
+  socket.on(INPUT_CHANNEL.TOGGLE_MICROPHONE_TO, (msg) => {
+    console.log('debug:bbb received', msg);
+    // if (msg === INPUT_MESSAGE.ENABLE_MICROPHONE) {
+    //   Service.enableMicrophone();
+    // } else if (msg === INPUT_MESSAGE.DISABLE_MICROPHONE) {
+    //   Service.disableMicrophone();
+    // }
   });
 };
 
@@ -217,18 +228,14 @@ export const sendStoreIsViewersGlobalMicDisabled = ({
   });
 };
 
-export const sendStoreMuteOne = ({
-  userKneuraID,
-}) => {
+export const sendStoreMuteOne = ({ userKneuraID }) => {
   sendGlobalChannel({
     channelName: OUTPUT_CHANNEL.MUTE_ONE_ATTENDEE,
     msg: JSON.stringify({ userKneuraID }),
   });
 };
 
-export const sendStoreUnmuteOne = ({
-  userKneuraID,
-}) => {
+export const sendStoreUnmuteOne = ({ userKneuraID }) => {
   sendGlobalChannel({
     channelName: OUTPUT_CHANNEL.UNMUTE_ONE_ATTENDEE,
     msg: JSON.stringify({ userKneuraID }),
