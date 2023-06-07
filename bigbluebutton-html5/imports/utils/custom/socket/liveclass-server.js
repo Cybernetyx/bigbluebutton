@@ -4,6 +4,7 @@ import CONFIG from '../../../../config';
 import Service from '../../../ui/components/audio/service';
 import AudioManager from '/imports/ui/services/audio-manager';
 import UserListService from '/imports/ui/components/user-list/service';
+import Auth from '/imports/ui/services/auth';
 
 const { LIVE_CLASS_SERVER_URL } = CONFIG;
 
