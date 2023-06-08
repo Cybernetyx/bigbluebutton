@@ -118,7 +118,7 @@ export const handleAudioConnection = () => {
  * @param {*} msg
  */
 export const handleToggleMicrophoneSelf = (msg) => {
-  console.log('debug:bbb received', msg);
+  console.log('debug:bbb received', { msg });
 
   const users = UserListService.getUsers();
   const user = users.find((user) => user.userId === Auth.userID);
@@ -132,6 +132,7 @@ export const handleToggleMicrophoneSelf = (msg) => {
   const voiceUser = UserListService.curatedVoiceUser(user.userId);
   const subjectVoiceUser = voiceUser;
 
+  console.log('debug: subjectVoiceUser.isMuted', subjectVoiceUser.isMuted);
   if (msg === INPUT_MESSAGE.ENABLE_MICROPHONE && subjectVoiceUser.isMuted) {
     console.log('debug:bbb received enable microphone');
     UserListService.toggleVoice(userId);
