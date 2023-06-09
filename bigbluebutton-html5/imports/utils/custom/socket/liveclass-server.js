@@ -3,6 +3,8 @@ import io from 'socket.io-client';
 import CONFIG from '../../../../config';
 import Service from '../../../ui/components/audio/service';
 import AudioManager from '/imports/ui/services/audio-manager';
+import UserListService from '/imports/ui/components/user-list/service';
+import Auth from '/imports/ui/services/auth';
 
 const { LIVE_CLASS_SERVER_URL } = CONFIG;
 
@@ -98,12 +100,53 @@ export const handleAudioConnection = () => {
     console.log('debug: audio is not connected');
     setTimeout(() => {
       if (!Service.isConnected()) {
-        console.log('debug: 5s after connect: audio is not connected:', Service.isConnected());
+        console.log(
+          'debug: 5s after connect: audio is not connected:',
+          Service.isConnected()
+        );
         AudioManager.joinMicrophone();
       } else {
         console.log('debug: 5s after connect: audio is connected');
       }
     }, 5000);
+  }
+};
+
+/**
+ * Note:
+ * toggle microphone of self
+ * @param {*} msg
+ */
+export const handleToggleMicrophoneSelf = (msg) => {
+  console.log('debug:bbb received', { msg });
+
+  const users = UserListService.getUsers();
+  const user = users.find((user) => user.userId === Auth.userID);
+  if (!user) {
+    return;
+  }
+
+  const { extId, userId } = user;
+  const userKneuraID = extId.split(',')[0];
+
+  const voiceUser = UserListService.curatedVoiceUser(user.userId);
+  const subjectVoiceUser = voiceUser;
+
+  console.log('debug: subjectVoiceUser.isMuted', subjectVoiceUser.isMuted);
+  if (msg === INPUT_MESSAGE.ENABLE_MICROPHONE && subjectVoiceUser.isMuted) {
+    console.log('debug:bbb received enable microphone');
+    UserListService.toggleVoice(userId);
+    sendStoreUnmuteOne({ userKneuraID });
+  } else if (
+    msg === INPUT_MESSAGE.DISABLE_MICROPHONE &&
+    !subjectVoiceUser.isMuted
+  ) {
+    console.log('debug:bbb received disable microphone', {
+      userKneuraID,
+      userId,
+    });
+    UserListService.toggleVoice(userId);
+    sendStoreMuteOne({ userKneuraID });
   }
 };
 
@@ -116,6 +159,7 @@ export const initBBBNamespaceListeners = () => {
     console.log(`debug:connect_error due to ${err.message}`);
     console.log('debug:', err);
   });
+  socket.on(INPUT_CHANNEL.TOGGLE_MICROPHONE_TO, handleToggleMicrophoneSelf);
 };
 
 export const connectBBBNamespace = () => {
@@ -217,18 +261,14 @@ export const sendStoreIsViewersGlobalMicDisabled = ({
   });
 };
 
-export const sendStoreMuteOne = ({
-  userKneuraID,
-}) => {
+export const sendStoreMuteOne = ({ userKneuraID }) => {
   sendGlobalChannel({
     channelName: OUTPUT_CHANNEL.MUTE_ONE_ATTENDEE,
     msg: JSON.stringify({ userKneuraID }),
   });
 };
 
-export const sendStoreUnmuteOne = ({
-  userKneuraID,
-}) => {
+export const sendStoreUnmuteOne = ({ userKneuraID }) => {
   sendGlobalChannel({
     channelName: OUTPUT_CHANNEL.UNMUTE_ONE_ATTENDEE,
     msg: JSON.stringify({ userKneuraID }),
